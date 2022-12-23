@@ -2,6 +2,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lottie/lottie.dart';
+import 'package:shimmer/shimmer.dart';
 
 import '../../../resource/app_constant.dart';
 import '../../business_logic/bloc/change_image_prompt_bloc.dart';
@@ -67,15 +68,6 @@ class HomePage extends StatelessWidget {
                           ),
                         ),
                       ),
-                      onFieldSubmitted: (_) {
-                        final String prompt = BlocProvider.of<ChangeImagePromptBloc>(context).state.prompt;
-
-                        if (prompt.isNotEmpty) {
-                          BlocProvider.of<GetImagesBloc>(context).add(
-                            GetImagesEvent(prompt: prompt, n: 10, size: '256x256'),
-                          );
-                        }
-                      },
                       onChanged: (value) => BlocProvider.of<ChangeImagePromptBloc>(context).add(ChangeImagePromptEvent(
                         prompt: value,
                       )),
@@ -103,7 +95,6 @@ class HomePage extends StatelessWidget {
                       suffixIcon: IconButton(
                         onPressed: () {
                           final String prompt = BlocProvider.of<ChangeImagePromptBloc>(context).state.prompt;
-
                           if (prompt.isNotEmpty) {
                             BlocProvider.of<GetImagesBloc>(context).add(
                               GetImagesEvent(prompt: prompt, n: 10, size: '1024x1024'),
@@ -115,15 +106,6 @@ class HomePage extends StatelessWidget {
                         ),
                       ),
                     ),
-                    onFieldSubmitted: (_) {
-                      final String prompt = BlocProvider.of<ChangeImagePromptBloc>(context).state.prompt;
-
-                      if (prompt.isNotEmpty) {
-                        BlocProvider.of<GetImagesBloc>(context).add(
-                          GetImagesEvent(prompt: prompt, n: 10, size: '1024x1024'),
-                        );
-                      }
-                    },
                     onChanged: (value) => BlocProvider.of<ChangeImagePromptBloc>(context).add(ChangeImagePromptEvent(
                       prompt: value,
                     )),
@@ -187,16 +169,29 @@ class HomePage extends StatelessWidget {
                               height: MediaQuery.of(context).size.height,
                               enlargeCenterPage: true,
                               enableInfiniteScroll: true,
-                              scrollDirection: Axis.horizontal,
+                              scrollDirection: Axis.vertical,
                             ),
                             items: state.data!.images.map(
                               (image) {
                                 return Builder(
                                   builder: (BuildContext context) {
-                                    return FadeInImage(
-                                      image: NetworkImage(image.url),
-                                      placeholder: const AssetImage(loadingImage),
-                                      fit: BoxFit.fitWidth,
+                                    return Image.network(
+                                      height: MediaQuery.of(context).size.height,
+                                      image.url,
+                                      fit: BoxFit.cover,
+                                      loadingBuilder: (_, child, progress) {
+                                        if (progress == null) return child;
+
+                                        return Shimmer.fromColors(
+                                          baseColor: Colors.grey.withOpacity(.5),
+                                          highlightColor: Colors.grey,
+                                          child: Container(
+                                            width: double.infinity,
+                                            height: MediaQuery.of(context).size.height,
+                                            color: Colors.white,
+                                          ),
+                                        );
+                                      },
                                     );
                                   },
                                 );

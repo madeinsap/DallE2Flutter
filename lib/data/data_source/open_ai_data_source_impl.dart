@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart';
 
 import '../../resource/app_constant.dart';
@@ -17,7 +18,7 @@ class OpenAIDataSourceImpl implements OpenAIDataSource {
   Future<OpenAIDataDTO> getImages({required String prompt, required int n, required String size}) async {
     final Map<String, String> headers = {
       'Content-Type': 'application/json',
-      'Authorization': 'Bearer $apiKey',
+      'Authorization': 'Bearer ${dotenv.env['OPEN_AI_KEY']}',
     };
 
     final Map<String, dynamic> body = {

@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get_it/get_it.dart';
 
 import 'presentation/business_logic/bloc/change_image_prompt_bloc.dart';
 import 'presentation/business_logic/bloc/get_images_bloc.dart';
 import 'presentation/home/page/home_page.dart';
+import 'resource/app_constant.dart';
 import 'resource/app_service_locator.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  await dotenv.load(fileName: envFile);
   await SystemChrome.setPreferredOrientations(
     [DeviceOrientation.portraitUp],
   );
