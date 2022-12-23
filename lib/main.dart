@@ -1,36 +1,48 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 
-import 'data/data_source/open_ai_data_source.dart';
-import 'data/data_source/open_ai_data_source_impl.dart';
-import 'data/repository/open_ai_repository_impl.dart';
-import 'domain/repository/open_ai_repository.dart';
+import 'presentation/business_logic/bloc/change_image_prompt_bloc.dart';
 import 'presentation/business_logic/bloc/get_images_bloc.dart';
 import 'presentation/home/page/home_page.dart';
-import 'util/api_client.dart';
+import 'resource/app_service_locator.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  ApiClient apiClient = ApiClient();
-  OpenAIDataSource dataSource = OpenAIDataSourceImpl(apiClient);
-  OpenAIRepository repository = OpenAIRepositoryImpl(dataSource);
-  GetImagesBloc getImagesBloc = GetImagesBloc(repository);
+  await SystemChrome.setPreferredOrientations(
+    [DeviceOrientation.portraitUp],
+  );
+  SystemChrome.setSystemUIOverlayStyle(
+    const SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+      systemNavigationBarColor: Colors.transparent,
+      statusBarIconBrightness: Brightness.dark,
+      statusBarBrightness: Brightness.light,
+    ),
+  );
 
-  runApp(MyApp(getImagesBloc: getImagesBloc));
+  AppServiceLocator.initUtil();
+  AppServiceLocator.initDataSource();
+  AppServiceLocator.initRepository();
+  AppServiceLocator.initBloc();
+
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  final GetImagesBloc getImagesBloc;
-
-  const MyApp({super.key, required this.getImagesBloc});
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (context) => getImagesBloc,
+          create: (context) => GetIt.I<GetImagesBloc>(),
+        ),
+        BlocProvider(
+          create: (context) => GetIt.I<ChangeImagePromptBloc>(),
         ),
       ],
       child: MaterialApp(

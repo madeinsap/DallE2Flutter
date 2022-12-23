@@ -9,8 +9,22 @@ class GetImagesEvent extends ImageEvent {
   final int n;
   final String size;
 
-  const GetImagesEvent(this.prompt, this.n, this.size);
+  const GetImagesEvent({required this.prompt, required this.n, required this.size});
 
   @override
   List<Object?> get props => [prompt, n, size];
+}
+
+class ClearImageEvent extends ImageEvent {
+  @override
+  List<Object?> get props => [];
+}
+
+class ChangeImagePromptEvent extends ImageEvent {
+  final String prompt;
+
+  const ChangeImagePromptEvent({required this.prompt});
+
+  @override
+  List<Object?> get props => [prompt];
 }

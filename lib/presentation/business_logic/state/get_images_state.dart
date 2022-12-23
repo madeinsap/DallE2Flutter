@@ -13,7 +13,7 @@ class GetImagesState extends Equatable {
     this.data,
   });
 
-  GetImagesState copyWith(bool isLoading, String? error, OpenAIData? data) {
+  GetImagesState copyWith({required bool isLoading, String? error, OpenAIData? data}) {
     return GetImagesState(
       isLoading: isLoading,
       error: error,

@@ -28,7 +28,7 @@ class OpenAIDataSourceImpl implements OpenAIDataSource {
 
     final Response response = await apiClient.postData(urlOpenAI, pathOpenAI, headers, body);
     if (response.statusCode != HttpStatus.ok) {
-      throw Exception(json.decode(response.body));
+      throw Exception(json.decode(response.body)['message']);
     }
 
     return OpenAIDataDTO.fromJson(json.decode(response.body));
